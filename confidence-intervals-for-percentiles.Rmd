@@ -128,7 +128,7 @@ output:
 # Bootstrap method (BCa), an approximation to the quantiles of the binomial distribution approach
  
 ```{r boot, echo=TRUE, results='markdown' }
-   
+
       f.quantile <- function(x, ind, ...){ 
         quantile(x[ind], ...) 
       } 
