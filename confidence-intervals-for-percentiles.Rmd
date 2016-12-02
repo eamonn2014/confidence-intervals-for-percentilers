@@ -112,33 +112,29 @@ output:
 ```{r quantile, echo=TRUE, results='markdown' }
       
       set.seed(321)
-      x <- rexp(120, rate=0.10) # create some data
-      n <- length(x)
-      
+      x <- rexp(120, rate=0.10) # create continuous data, no ties
+
       conf2 <- 0.95             # confidence level
-      low <- (1- conf2)/2      
-      up  <-  1-low
+      low <- (1- conf2)/2 ; up <- 1-low
       
-      p <- sum(x <= 1/0.10 )/length(x)  # the percentile of this value is of interest
+      # What percentile is the value of 10? 
+      (p <- sum(x <= 1/0.10 )/length(x))  
       
-      # binomial quantiles approach
-      sort(x)[qbinom(c(low, up), size=n, prob=p)]
+      # confidence intervals for the percentile estimate 'p'
+      sort(x)[qbinom(c(low, up), size=length(x), prob=p)]
        
 ```
  
-# Bootstrap method (BCa), an approximation to the quantiled of the binomial dist. approach
+# Bootstrap method (BCa), an approximation to the quantiles of the binomial distribution approach
  
 ```{r boot, echo=TRUE, results='markdown' }
-  
-      
-      bz <- 10000   # number of bootstraps (ensure (a least) this is > than sample size) 
-      
+   
       f.quantile <- function(x, ind, ...){ 
         quantile(x[ind], ...) 
       } 
       
-      # the percentiles in the probs vector will be bootstrapped
-      quant.boot <- boot(x, f.quantile, R = bz, probs = p)
+      # the percentile p is bootstrapped, ensure No of bootstraps is > than sample size
+      quant.boot <- boot(x, f.quantile, R = 10000, probs = p)
       
       # apply the boo.ci function, note BCa option
       boot.ci(quant.boot, c(conf2), type = c("bca") )
@@ -151,6 +147,8 @@ output:
 
 http://stats.stackexchange.com/questions/186957/ is-there-a-reliable-nonparametric-confidence-interval-for-the-mean-of-a-skewed-d
  
+http://stats.stackexchange.com/questions/21103/confidence-interval-for-median/21116#21116
+
 # COMPUTING ENVIRONMENT
  
 ```{r, echo=FALSE}
